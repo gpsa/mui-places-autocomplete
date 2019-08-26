@@ -85,13 +85,13 @@ export default class MUIPlacesAutocomplete extends React.Component {
                 <MenuList>
                   {renderedSuggestions}
                   {renderedSuggestions.length > 0
-                      ? (
-                        <div style={{ display: 'flex' }}>
-                          <span style={{ flex: 1 }} />
-                          <img src={googleLogo} alt="" />
-                        </div>
-                        )
-                      : null}
+                    ? (
+                      <div style={{ display: 'flex' }}>
+                        <span style={{ flex: 1 }} />
+                        <img src={googleLogo} alt="" />
+                      </div>
+                    )
+                    : null}
                 </MenuList>
               </Paper>
             </Grow>
@@ -226,9 +226,10 @@ export default class MUIPlacesAutocomplete extends React.Component {
     isOpen,
     inputValue,
     highlightedIndex,
+    getRootProps,
   }) {
     const { suggestions } = this.state
-    const { renderTarget, textFieldProps } = this.props
+    const { renderTarget, textFieldProps, containerProps } = this.props
 
     // We set the value of 'tag' on the <Manager> component to false to allow the rendering of
     // children instead of a specific DOM element.
@@ -242,15 +243,15 @@ export default class MUIPlacesAutocomplete extends React.Component {
     // rendered on the server vs. what was rendered on the client after rehydration due to automatic
     // 'id' prop generation by <Downshift>.
     return (
-      <div>
+      <div {...containerProps}>
         <Manager tag={false}>
           <TextField {...getInputProps({ id: 'mui-places-autocomplete-input', ...textFieldProps })} />
           <Target>{renderTarget()}</Target>
           {isOpen ? MUIPlacesAutocomplete.renderSuggestionsContainer(
-                      suggestions,
-                      { getItemProps, inputValue, highlightedIndex },
-                      )
-                  : null}
+            suggestions,
+            { getItemProps, inputValue, highlightedIndex },
+          )
+            : null}
         </Manager>
       </div>
     )
@@ -262,7 +263,7 @@ export default class MUIPlacesAutocomplete extends React.Component {
     // <input> elements state to the consumer.
     const controlProps = this.props.textFieldProps && this.props.textFieldProps.value ?
       { inputValue: this.props.textFieldProps.value } :
-      { }
+      {}
 
     return (
       <Downshift
@@ -281,9 +282,11 @@ MUIPlacesAutocomplete.propTypes = {
   renderTarget: PropTypes.func.isRequired,
   createAutocompleteRequest: PropTypes.func,
   textFieldProps: PropTypes.object,
+  containerProps: PropTypes.object
 }
 
 MUIPlacesAutocomplete.defaultProps = {
   createAutocompleteRequest: inputValue => ({ input: inputValue }),
   textFieldProps: { autoFocus: false, placeholder: 'Search for a place', fullWidth: true },
+  containerProps: {}
 }
